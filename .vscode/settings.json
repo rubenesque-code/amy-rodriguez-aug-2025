@@ -1,0 +1,20 @@
+{
+	"window.title": "Amy Rodriguez - AUG",
+	"css.lint.unknownAtRules": "ignore",
+	"editor.quickSuggestions": {
+		"other": true,
+		"comments": false,
+		"strings": true
+	},
+	"workbench.statusBar.visible": true,
+	"workbench.editor.showTabs": "none",
+	"editor.snippetSuggestions": "top",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"prettier.requireConfig": false
+}
