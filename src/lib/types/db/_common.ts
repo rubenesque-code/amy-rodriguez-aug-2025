@@ -1,11 +1,5 @@
 import type { CloudinaryImage } from './cloudinary';
 
-interface StyleWithSingleValue {
-	id: number;
-	aspectRatio: number;
-	value: number;
-}
-
 interface Image {
 	id: number;
 	created_at: string;
@@ -18,6 +12,12 @@ interface Position {
 	aspectRatio: number;
 	x: number;
 	y: number;
+}
+
+interface StyleWithSingleValue {
+	id: number;
+	aspectRatio: number;
+	value: number;
 }
 
 export type { StyleWithSingleValue, Image, Position };

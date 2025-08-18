@@ -32,7 +32,7 @@ function sanitiseImageComponentDb(data: Db['PortfolioPage']['imageComponents'][n
 		typeof data.id === 'number' &&
 		typeof data.order === 'number' &&
 		typeof data.layer === 'number' &&
-		data.image.image.url === 'string'
+		typeof data.image.image.url === 'string'
 	);
 }
 

@@ -11,8 +11,10 @@ const validPage: Db['PortfolioPage'] = {
 	imageComponents: [
 		{
 			id: 100,
-			order: 1,
 			layer: 0,
+			order: 1,
+			positions: [{ id: 1, aspectRatio: 1.0, x: 0, y: 0 }],
+			widths: [{ id: 1, aspectRatio: 1.0, value: 100 }],
 			image: {
 				id: 200,
 				created_at: '2025-01-01',
@@ -36,9 +38,7 @@ const validPage: Db['PortfolioPage'] = {
 					created_at: '2025-01-01',
 					updated_at: '2025-01-01'
 				}
-			},
-			positions: [{ id: 1, aspectRatio: 1.0, x: 0, y: 0 }],
-			widths: [{ id: 1, aspectRatio: 1.0, value: 100 }]
+			}
 		}
 	]
 };
@@ -47,6 +47,63 @@ describe('sanitiseDataDb', () => {
 	it('keeps valid portfolio pages unchanged', () => {
 		const output = sanitiseDataDb([validPage]);
 		expect(output).toEqual([validPage]);
+	});
+
+	it('filters out invalid portfolio pages', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const invalidPage = { ...validPage, order: 'not-a-number' } as any;
+		const output = sanitiseDataDb([validPage, invalidPage]);
+		expect(output).toEqual([validPage]);
+	});
+
+	it('filters out invalid image components', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const badImageComponent = { ...validPage.imageComponents[0], order: 'wrong' } as any;
+		const pageWithBadImage = {
+			...validPage,
+			imageComponents: [...validPage.imageComponents, badImageComponent]
+		};
+		const output = sanitiseDataDb([pageWithBadImage]);
+		expect(output[0].imageComponents.length).toBe(1);
+		expect(output[0].imageComponents[0]).toEqual(validPage.imageComponents[0]);
+	});
+
+	it('filters out invalid positions', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const badPosition = { id: 'x', aspectRatio: 1, x: 0, y: 0 } as any;
+		const page = {
+			...validPage,
+			imageComponents: [
+				{
+					...validPage.imageComponents[0],
+					positions: [...validPage.imageComponents[0].positions, badPosition]
+				}
+			]
+		};
+		const output = sanitiseDataDb([page]);
+		expect(output[0].imageComponents[0].positions.length).toBe(1);
+	});
+
+	it('filters out invalid widths', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const badWidth = { id: 1, aspectRatio: 1, value: 'wrong' } as any;
+		const page = {
+			...validPage,
+			imageComponents: [
+				{
+					...validPage.imageComponents[0],
+					widths: [...validPage.imageComponents[0].widths, badWidth]
+				}
+			]
+		};
+		const output = sanitiseDataDb([page]);
+		expect(output[0].imageComponents[0].widths.length).toBe(1);
+	});
+
+	it('handles empty arrays correctly', () => {
+		const emptyPage = { ...validPage, imageComponents: [] };
+		const output = sanitiseDataDb([emptyPage]);
+		expect(output[0].imageComponents).toEqual([]);
 	});
 });
 

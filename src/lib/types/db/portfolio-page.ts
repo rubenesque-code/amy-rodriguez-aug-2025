@@ -10,9 +10,9 @@ export interface PortfolioPage {
 
 interface ImageComponent {
 	id: number;
-	image: Image;
-	order: number;
 	layer: number;
+	order: number;
 	positions: Position[];
 	widths: StyleWithSingleValue[];
+	image: Image;
 }

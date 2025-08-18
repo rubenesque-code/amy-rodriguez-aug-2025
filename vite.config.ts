@@ -6,6 +6,7 @@ export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	test: {
 		expect: { requireAssertions: true },
+		reporters: 'verbose',
 		projects: [
 			{
 				extends: './vite.config.ts',
