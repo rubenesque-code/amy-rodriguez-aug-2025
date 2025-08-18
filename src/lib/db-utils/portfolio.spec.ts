@@ -1,13 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { Db } from '^lib/types';
-import { remapDbData } from './portfolio';
-
-describe('sum test', () => {
-	it('adds 1 + 2 to equal 3', () => {
-		expect(1 + 2).toBe(3);
-	});
-});
+import { remapDataDb, sanitiseDataDb } from './portfolio';
 
 describe('remapDbDataForSite', () => {
 	it('remaps a basic PortfolioPage correctly', () => {
@@ -53,15 +47,15 @@ describe('remapDbDataForSite', () => {
 			}
 		];
 
-		const result = remapDbData(input);
+		const result = input.map(remapDataDb);
 
 		expect(result).toEqual([
 			{
-				id: '1',
+				id: 1,
 				order: 5,
 				dynamicImages: [
 					{
-						id: '10',
+						id: 10,
 						url: '/images/test.jpg',
 						order: 1,
 						layer: 2,
@@ -71,5 +65,121 @@ describe('remapDbDataForSite', () => {
 				]
 			}
 		]);
+	});
+
+	it('returns empty array when given empty array', () => {
+		expect([].map(remapDataDb)).toEqual([]);
+	});
+
+	it('handles PortfolioPage with no imageComponents', () => {
+		const input: Db['PortfolioPage'][] = [
+			{ id: 1, order: 1, created_at: '', updated_at: '', imageComponents: [] }
+		];
+
+		expect(input.map(remapDataDb)).toEqual([{ id: 1, order: 1, dynamicImages: [] }]);
+	});
+});
+
+const validPage: Db['PortfolioPage'] = {
+	id: 1,
+	order: 10,
+	created_at: '2025-01-01',
+	updated_at: '2025-01-01',
+	imageComponents: [
+		{
+			id: 100,
+			order: 1,
+			layer: 0,
+			image: {
+				id: 200,
+				created_at: '2025-01-01',
+				updated_at: '2025-01-01',
+				image: {
+					id: 400,
+					name: 'img.jpg',
+					alternativeText: null,
+					caption: null,
+					width: 800,
+					height: 600,
+					formats: {} as unknown,
+					hash: 'hash',
+					ext: '.jpg',
+					mime: 'image/jpeg',
+					size: 123,
+					url: 'url.jpg',
+					previewUrl: null,
+					provider: 'cloudinary',
+					provider_metadata: { public_id: 'public', resource_type: 'image' },
+					created_at: '2025-01-01',
+					updated_at: '2025-01-01'
+				}
+			},
+			positions: [{ id: 1, aspectRatio: 1.0, x: 0, y: 0 }],
+			widths: [{ id: 1, aspectRatio: 1.0, value: 100 }]
+		}
+	]
+};
+
+describe('sanitiseDataDb', () => {
+	it('keeps valid portfolio pages unchanged', () => {
+		const output = sanitiseDataDb([validPage]);
+		expect(output).toEqual([validPage]);
+	});
+
+	it('filters out invalid portfolio pages', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const invalidPage = { ...validPage, order: 'not-a-number' } as any;
+		const output = sanitiseDataDb([validPage, invalidPage]);
+		expect(output).toEqual([validPage]);
+	});
+
+	it('filters out invalid image components', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const badImageComponent = { ...validPage.imageComponents[0], order: 'wrong' } as any;
+		const pageWithBadImage = {
+			...validPage,
+			imageComponents: [...validPage.imageComponents, badImageComponent]
+		};
+		const output = sanitiseDataDb([pageWithBadImage]);
+		expect(output[0].imageComponents.length).toBe(1);
+		expect(output[0].imageComponents[0]).toEqual(validPage.imageComponents[0]);
+	});
+
+	it('filters out invalid positions', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const badPosition = { id: 'x', aspectRatio: 1, x: 0, y: 0 } as any;
+		const page = {
+			...validPage,
+			imageComponents: [
+				{
+					...validPage.imageComponents[0],
+					positions: [...validPage.imageComponents[0].positions, badPosition]
+				}
+			]
+		};
+		const output = sanitiseDataDb([page]);
+		expect(output[0].imageComponents[0].positions.length).toBe(1);
+	});
+
+	it('filters out invalid widths', () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const badWidth = { id: 1, aspectRatio: 1, value: 'wrong' } as any;
+		const page = {
+			...validPage,
+			imageComponents: [
+				{
+					...validPage.imageComponents[0],
+					widths: [...validPage.imageComponents[0].widths, badWidth]
+				}
+			]
+		};
+		const output = sanitiseDataDb([page]);
+		expect(output[0].imageComponents[0].widths.length).toBe(1);
+	});
+
+	it('handles empty arrays correctly', () => {
+		const emptyPage = { ...validPage, imageComponents: [] };
+		const output = sanitiseDataDb([emptyPage]);
+		expect(output[0].imageComponents).toEqual([]);
 	});
 });
