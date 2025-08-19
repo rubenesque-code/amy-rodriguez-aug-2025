@@ -16,5 +16,6 @@
 	"[javascript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
-	"prettier.requireConfig": false
+	"prettier.requireConfig": false,
+	"editor.pasteAs.enabled": false
 }

@@ -1,4 +1,5 @@
-import type { Remapped, Db } from '^types';
+import type { Remapped, Db, Site } from '^types';
+import { produce } from 'immer';
 
 export function sanitiseDataDb(data: Db['PortfolioPage'][]): Db['PortfolioPage'][] {
 	return data.filter(sanitisePortfolioPageDb).map(({ imageComponents, ...restPage }) => ({
@@ -71,4 +72,31 @@ export function remapDataDb(data: Db['PortfolioPage']): Remapped['PortfolioPage'
 			...restItem
 		}))
 	};
+}
+
+function filterDataValid(data: Remapped['PortfolioPage']): boolean {
+	return Boolean(data.dynamicImages.length);
+}
+
+function transformRemappedData(data: Remapped['PortfolioPage']): Site['PortfolioPage'] {
+	return {
+		id: crypto.randomUUID(),
+		order: data.order,
+		dynamicImages: data.dynamicImages.map((imageComponent) => ({
+			...imageComponent,
+			id: crypto.randomUUID()
+		}))
+	};
+}
+
+function orderPages(data: Site['PortfolioPage'][]) {
+	return produce(data, (draft) => draft.sort((a, b) => a.order - b.order));
+}
+
+export function processDataForSite(data: Remapped['PortfolioPage'][]): Site['PortfolioPage'][] {
+	const pagesValid = data.filter(filterDataValid);
+	const transformed = pagesValid.map(transformRemappedData);
+	const ordered = orderPages(transformed).map((page, i) => ({ ...page, order: i }));
+
+	return ordered;
 }
