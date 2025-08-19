@@ -5,35 +5,42 @@ import type { Db } from '^lib/types';
 const schema = Joi.object({
 	id: Joi.number().required(),
 	order: Joi.number().required(),
-	imageComponents: Joi.array().items(
-		Joi.object({
-			id: Joi.number().required(),
-			order: Joi.number().required(),
-			image: Joi.object({
+	imageComponents: Joi.array()
+		.items(
+			Joi.object({
+				id: Joi.number().required(),
+				layer: Joi.number().required(),
+				order: Joi.number().required(),
 				image: Joi.object({
-					url: Joi.string().required()
-				})
-			}),
-			positions: Joi.array().items(
-				Joi.object({
-					id: Joi.number().required(),
-					aspectRatio: Joi.number().required(),
-					x: Joi.number().required(),
-					y: Joi.number().required()
-				})
-			),
-			widths: Joi.array().items(
-				Joi.object({
-					id: Joi.number().required(),
-					aspectRatio: Joi.number().required(),
-					value: Joi.number().required()
-				})
-			)
-		})
-	)
+					image: Joi.object({
+						url: Joi.string().required()
+					})
+				}),
+				positions: Joi.array()
+					.items(
+						Joi.object({
+							id: Joi.number().required(),
+							aspectRatio: Joi.number().required(),
+							x: Joi.number().required(),
+							y: Joi.number().required()
+						})
+					)
+					.min(1),
+				widths: Joi.array()
+					.items(
+						Joi.object({
+							id: Joi.number().required(),
+							aspectRatio: Joi.number().required(),
+							value: Joi.number().required()
+						})
+					)
+					.min(1)
+			})
+		)
+		.min(1)
 });
 
-function validateByFieldType(item: Db['PortfolioPage']): boolean {
+function validate(item: Db['PortfolioPage']): boolean {
 	const { error } = schema.validate(item, {
 		abortEarly: false,
 		allowUnknown: true,
@@ -47,4 +54,4 @@ function validateByFieldType(item: Db['PortfolioPage']): boolean {
 	return !error;
 }
 
-export { validateByFieldType };
+export { validate };

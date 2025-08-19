@@ -61,7 +61,13 @@ const itemPartial: DeepPartial<Db['PortfolioPage']> = {
 					// Missing y
 				}
 			],
-			widths: []
+			widths: [
+				{
+					id: 1,
+					aspectRatio: 1.5,
+					value: 100
+				}
+			]
 		}
 	]
 };
@@ -87,7 +93,13 @@ const itemIncorrectTypes: DeepPartial<Db['PortfolioPage']> = {
 					y: 200
 				}
 			],
-			widths: [],
+			widths: [
+				{
+					id: 1,
+					aspectRatio: 1.5,
+					value: 100
+				}
+			],
 			image: {
 				id: 200,
 				created_at: '2025-01-01',
@@ -124,4 +136,74 @@ const itemImageComponentsEmpty: Db['PortfolioPage'] = {
 	imageComponents: []
 };
 
-export { itemValid, itemPartial, itemIncorrectTypes, itemImageComponentsEmpty };
+const itemInvalidNested: DeepPartial<Db['PortfolioPage']> = {
+	id: 1,
+	order: 1,
+	created_at: '2023-01-01T00:00:00Z',
+	updated_at: '2023-01-01T00:00:00Z',
+	imageComponents: [
+		{
+			id: 1,
+			order: 1,
+			layer: 0,
+			image: {
+				id: 1,
+				created_at: '2023-01-01T00:00:00Z',
+				updated_at: '2023-01-01T00:00:00Z',
+				image: {
+					url: 'https://example.com/image.jpg'
+				}
+			},
+			positions: [
+				{
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					id: '1' as any, // Should be number
+					aspectRatio: 1.5,
+					x: 100,
+					y: 200
+				}
+			],
+			widths: [
+				{
+					id: 1,
+					aspectRatio: 1.5,
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					value: '300' as any // Should be number
+				}
+			]
+		}
+	]
+};
+
+const itemNoPositionOrWidth: DeepPartial<Db['PortfolioPage']> = {
+	id: 1,
+	order: 1,
+	created_at: '2023-01-01T00:00:00Z',
+	updated_at: '2023-01-01T00:00:00Z',
+	imageComponents: [
+		{
+			id: 1,
+			layer: 0,
+			order: 1,
+			image: {
+				id: 1,
+				created_at: '2023-01-01T00:00:00Z',
+				updated_at: '2023-01-01T00:00:00Z',
+				image: {
+					url: 'https://example.com/image.jpg'
+				}
+			},
+			positions: [], // Empty, should trigger error
+			widths: [] // Empty, should trigger error
+		}
+	]
+};
+
+export {
+	itemValid,
+	itemPartial,
+	itemIncorrectTypes,
+	itemImageComponentsEmpty,
+	itemInvalidNested,
+	itemNoPositionOrWidth
+};

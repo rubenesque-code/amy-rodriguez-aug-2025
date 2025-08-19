@@ -2,6 +2,6 @@ import type { DynamicImage } from './_common';
 
 export interface PortfolioPage {
 	id: string;
-	dynamicImages: DynamicImage[];
+	imageComponents: DynamicImage[];
 	order: number;
 }

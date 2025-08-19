@@ -1,7 +1,7 @@
 import type { PortfolioPage } from './portfolio';
 
-type Site = {
+type SiteSchema = {
 	PortfolioPage: PortfolioPage;
 };
 
-export type { Site };
+export type { SiteSchema };
