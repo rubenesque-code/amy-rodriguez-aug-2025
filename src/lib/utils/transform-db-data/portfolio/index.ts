@@ -1,28 +1,7 @@
 import type { Db } from '^lib/db/_types';
+import type { SiteSchema } from '^lib/types';
 
-interface SchemaType {
-	id: string;
-	order: number;
-	imageComponents: Array<{
-		id: string;
-		layer: number;
-		order: number;
-		positions: Array<{
-			id: string;
-			aspectRatio: number;
-			x: number;
-			y: number;
-		}>;
-		url: string;
-		widths: Array<{
-			id: string;
-			aspectRatio: number;
-			value: number;
-		}>;
-	}>;
-}
-
-function mapDbToSiteSchema(item: Db['PortfolioPage']): SchemaType {
+function mapDbToSiteSchema(item: Db['PortfolioPage']): SiteSchema['PortfolioPage'] {
 	return {
 		id: crypto.randomUUID(),
 		order: item.order,
@@ -43,7 +22,7 @@ function mapDbToSiteSchema(item: Db['PortfolioPage']): SchemaType {
 	};
 }
 
-function sortByOrderThenId(items: SchemaType[]): SchemaType[] {
+function sortByOrderThenId(items: SiteSchema['PortfolioPage'][]): SiteSchema['PortfolioPage'][] {
 	return items.sort((a, b) => {
 		if (a.order !== b.order) {
 			return a.order - b.order;

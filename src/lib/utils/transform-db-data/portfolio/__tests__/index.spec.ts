@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mapDbToSiteSchema } from '../index'; // Adjust the import path
-import type { Db } from '^lib/db/_types'; // Adjust the import path
-import type { DeepPartial } from '^lib/types';
 
-// Mock crypto.randomUUID with valid UUIDs
+import type { Db } from '^lib/db/_types';
+import type { DeepPartial, SiteSchema } from '^lib/types';
+
+import { mapDbToSiteSchema, sortByOrderThenId } from '../index';
+
 const mockUUIDs = [
 	'123e4567-e89b-12d3-a456-426614174000',
 	'123e4567-e89b-12d3-a456-426614174001',
@@ -12,8 +13,10 @@ const mockUUIDs = [
 	'123e4567-e89b-12d3-a456-426614174004',
 	'123e4567-e89b-12d3-a456-426614174005',
 	'123e4567-e89b-12d3-a456-426614174006'
-] as const; // Type assertion to treat as literal UUIDs
+] as const;
+
 let uuidIndex = 0;
+
 vi.spyOn(crypto, 'randomUUID').mockImplementation(() => {
 	return mockUUIDs[uuidIndex++] as `${string}-${string}-${string}-${string}-${string}`;
 });
@@ -114,5 +117,87 @@ describe('mapDbToSiteSchema', () => {
 			]
 		});
 		expect(crypto.randomUUID).toHaveBeenCalledTimes(6); // Root id, imageComponent id, 2 position ids, 2 width ids
+	});
+});
+
+const createSchemaType = (id: string, order: number): SiteSchema['PortfolioPage'] => ({
+	id,
+	order,
+	imageComponents: [
+		{
+			id: '123e4567-e89b-12d3-a456-426614174000',
+			layer: 0,
+			order: 1,
+			url: 'https://example.com/image.jpg',
+			positions: [{ id: '123e4567-e89b-12d3-a456-426614174001', aspectRatio: 1.5, x: 100, y: 200 }],
+			widths: [{ id: '123e4567-e89b-12d3-a456-426614174002', aspectRatio: 1.5, value: 50 }]
+		}
+	]
+});
+
+describe('sortByOrderThenId', () => {
+	beforeEach(() => {
+		// No mocks needed, but included for consistency with previous tests
+	});
+
+	it('should sort by order when order values differ', () => {
+		const input: SiteSchema['PortfolioPage'][] = [
+			createSchemaType('123e4567-e89b-12d3-a456-426614174001', 2),
+			createSchemaType('123e4567-e89b-12d3-a456-426614174002', 1),
+			createSchemaType('123e4567-e89b-12d3-a456-426614174003', 3)
+		];
+
+		const result = sortByOrderThenId(input);
+		expect(result).toEqual([
+			createSchemaType('123e4567-e89b-12d3-a456-426614174002', 1),
+			createSchemaType('123e4567-e89b-12d3-a456-426614174001', 2),
+			createSchemaType('123e4567-e89b-12d3-a456-426614174003', 3)
+		]);
+	});
+
+	it('should sort by id when order values are equal', () => {
+		const input: SiteSchema['PortfolioPage'][] = [
+			createSchemaType('uuid-b', 1),
+			createSchemaType('uuid-a', 1),
+			createSchemaType('uuid-c', 1)
+		];
+
+		const result = sortByOrderThenId(input);
+		expect(result).toEqual([
+			createSchemaType('uuid-a', 1),
+			createSchemaType('uuid-b', 1),
+			createSchemaType('uuid-c', 1)
+		]);
+	});
+
+	it('should sort by order then id when both vary', () => {
+		const input: SiteSchema['PortfolioPage'][] = [
+			createSchemaType('uuid-b', 2),
+			createSchemaType('uuid-a', 1),
+			createSchemaType('uuid-c', 2),
+			createSchemaType('uuid-d', 1)
+		];
+
+		const result = sortByOrderThenId(input);
+		expect(result).toEqual([
+			createSchemaType('uuid-a', 1),
+			createSchemaType('uuid-d', 1),
+			createSchemaType('uuid-b', 2),
+			createSchemaType('uuid-c', 2)
+		]);
+	});
+
+	it('should handle an empty array', () => {
+		const input: SiteSchema['PortfolioPage'][] = [];
+		const result = sortByOrderThenId(input);
+		expect(result).toEqual([]);
+	});
+
+	it('should handle a single-item array', () => {
+		const input: SiteSchema['PortfolioPage'][] = [
+			createSchemaType('123e4567-e89b-12d3-a456-426614174001', 1)
+		];
+		const result = sortByOrderThenId(input);
+		expect(result).toEqual([createSchemaType('123e4567-e89b-12d3-a456-426614174001', 1)]);
 	});
 });
