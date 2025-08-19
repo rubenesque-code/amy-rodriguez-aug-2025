@@ -34,7 +34,11 @@ const schema = Joi.object({
 });
 
 function validateByFieldType(item: Db['PortfolioPage']): boolean {
-	const { error } = schema.validate(item, { abortEarly: false, allowUnknown: true });
+	const { error } = schema.validate(item, {
+		abortEarly: false,
+		allowUnknown: true,
+		convert: false
+	});
 
 	if (error) {
 		console.warn(`Item ${item.id} failed type validation:`, error.details);
