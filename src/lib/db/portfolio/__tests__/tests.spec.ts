@@ -16,7 +16,7 @@ vi.spyOn(console, 'warn').mockImplementation(() => {});
 
 describe('validateByFieldType', () => {
 	beforeEach(() => {
-		vi.clearAllMocks(); // Clear mocks to prevent leakage
+		vi.clearAllMocks();
 	});
 
 	it('should return true for a valid PortfolioPage object', () => {
