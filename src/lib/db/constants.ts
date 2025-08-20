@@ -1,5 +1,5 @@
 const endPoint = {
-	'portfolio-pages': '/portfolio-pages',
+	portfolio: '/portfolio-pages',
 	products: '/products'
 };
 

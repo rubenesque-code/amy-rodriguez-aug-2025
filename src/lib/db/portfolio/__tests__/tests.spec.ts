@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Db } from '../../_types';
+import type { DbSchema } from '^db/~types';
 
-import { validate } from '../index';
+import { deepValidate } from '../utils';
 import {
 	itemImageComponentsEmpty,
 	itemIncorrectTypes,
@@ -20,7 +20,7 @@ describe('validateByFieldType', () => {
 	});
 
 	it('should return true for a valid PortfolioPage object', () => {
-		const result = validate(itemValid);
+		const result = deepValidate(itemValid);
 
 		expect(result).toBe(true);
 
@@ -28,7 +28,7 @@ describe('validateByFieldType', () => {
 	});
 
 	it('should return false for missing required fields', () => {
-		const result = validate(itemPartial as Db['PortfolioPage']);
+		const result = deepValidate(itemPartial as DbSchema['Portfolio']);
 
 		expect(result).toBe(false);
 
@@ -46,7 +46,7 @@ describe('validateByFieldType', () => {
 	});
 
 	it('should return false and log warnings for invalid types in invalidItemIncorrectTypes', () => {
-		const result = validate(itemIncorrectTypes as Db['PortfolioPage']);
+		const result = deepValidate(itemIncorrectTypes as DbSchema['Portfolio']);
 
 		expect(result).toBe(false);
 
@@ -68,7 +68,7 @@ describe('validateByFieldType', () => {
 	});
 
 	it('should return false for empty imageComponents array', () => {
-		const result = validate(itemImageComponentsEmpty);
+		const result = deepValidate(itemImageComponentsEmpty);
 
 		expect(result).toBe(false);
 
@@ -76,7 +76,7 @@ describe('validateByFieldType', () => {
 	});
 
 	it('should return false for invalid nested array items', () => {
-		const result = validate(itemInvalidNested as Db['PortfolioPage']);
+		const result = deepValidate(itemInvalidNested as DbSchema['Portfolio']);
 
 		expect(result).toBe(false);
 
@@ -95,7 +95,7 @@ describe('validateByFieldType', () => {
 	});
 
 	it('should return false for no position and no width items', () => {
-		const result = validate(itemNoPositionOrWidth as Db['PortfolioPage']);
+		const result = deepValidate(itemNoPositionOrWidth as DbSchema['Portfolio']);
 
 		expect(result).toBe(false);
 

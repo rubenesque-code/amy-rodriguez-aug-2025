@@ -1,7 +1,7 @@
 import type { DeepPartial } from '^lib/types';
-import type { Db } from '../../_types';
+import type { DbSchema } from '^db/~types';
 
-const itemValid: Db['PortfolioPage'] = {
+const itemValid: DbSchema['Portfolio'] = {
 	id: 1,
 	order: 10,
 	created_at: '2025-01-01',
@@ -41,7 +41,7 @@ const itemValid: Db['PortfolioPage'] = {
 	]
 };
 
-const itemPartial: DeepPartial<Db['PortfolioPage']> = {
+const itemPartial: DeepPartial<DbSchema['Portfolio']> = {
 	// Missing id
 	order: 1,
 	imageComponents: [
@@ -72,7 +72,7 @@ const itemPartial: DeepPartial<Db['PortfolioPage']> = {
 	]
 };
 
-const itemIncorrectTypes: DeepPartial<Db['PortfolioPage']> = {
+const itemIncorrectTypes: DeepPartial<DbSchema['Portfolio']> = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	id: '1' as any, // Should be number
 	order: 1,
@@ -128,7 +128,7 @@ const itemIncorrectTypes: DeepPartial<Db['PortfolioPage']> = {
 	]
 };
 
-const itemImageComponentsEmpty: Db['PortfolioPage'] = {
+const itemImageComponentsEmpty: DbSchema['Portfolio'] = {
 	id: 1,
 	order: 1,
 	created_at: '2023-01-01T00:00:00Z',
@@ -136,7 +136,7 @@ const itemImageComponentsEmpty: Db['PortfolioPage'] = {
 	imageComponents: []
 };
 
-const itemInvalidNested: DeepPartial<Db['PortfolioPage']> = {
+const itemInvalidNested: DeepPartial<DbSchema['Portfolio']> = {
 	id: 1,
 	order: 1,
 	created_at: '2023-01-01T00:00:00Z',
@@ -175,7 +175,7 @@ const itemInvalidNested: DeepPartial<Db['PortfolioPage']> = {
 	]
 };
 
-const itemNoPositionOrWidth: DeepPartial<Db['PortfolioPage']> = {
+const itemNoPositionOrWidth: DeepPartial<DbSchema['Portfolio']> = {
 	id: 1,
 	order: 1,
 	created_at: '2023-01-01T00:00:00Z',

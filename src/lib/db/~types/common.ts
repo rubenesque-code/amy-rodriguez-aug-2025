@@ -20,4 +20,11 @@ interface StyleWithSingleValue {
 	value: number;
 }
 
-export type { StyleWithSingleValue, Image, Position };
+type TextComponent = {
+	id: number;
+	fontSizes: StyleWithSingleValue[];
+	fontWeights: StyleWithSingleValue[];
+	positions: Position[];
+};
+
+export type { StyleWithSingleValue, Image, Position, TextComponent };

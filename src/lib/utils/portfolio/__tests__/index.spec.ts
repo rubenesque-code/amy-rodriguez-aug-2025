@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-import type { Db } from '^lib/db/_types';
+import type { DbSchema } from '^db/~types/common';
 import type { DeepPartial, SiteSchema } from '^lib/types';
 
-import { mapDbToSiteSchema, sortByOrderThenId } from '../index';
+import { transformDbDataToSiteSchema, compareByOrderThenId } from '../index';
 
 const mockUUIDs = [
 	'123e4567-e89b-12d3-a456-426614174000',
@@ -28,7 +28,7 @@ describe('mapDbToSiteSchema', () => {
 	});
 
 	it('should correctly map a valid PortfolioPage with populated arrays to SchemaType', () => {
-		const input: DeepPartial<Db['PortfolioPage']> = {
+		const input: DeepPartial<DbSchema['PortfolioPage']> = {
 			id: 1,
 			order: 1,
 			created_at: '2023-01-01T00:00:00Z',
@@ -76,7 +76,7 @@ describe('mapDbToSiteSchema', () => {
 			]
 		};
 
-		const result = mapDbToSiteSchema(input as Db['PortfolioPage']);
+		const result = transformDbDataToSiteSchema(input as DbSchema['PortfolioPage']);
 
 		expect(result).toEqual({
 			id: '123e4567-e89b-12d3-a456-426614174000',
@@ -135,11 +135,13 @@ const createSchemaType = (id: string, order: number): SiteSchema['PortfolioPage'
 	]
 });
 
-describe('sortByOrderThenId', () => {
-	beforeEach(() => {
-		// No mocks needed, but included for consistency with previous tests
-	});
+export function sortByOrderThenId(
+	items: SiteSchema['PortfolioPage'][]
+): SiteSchema['PortfolioPage'][] {
+	return items.sort(compareByOrderThenId);
+}
 
+describe('sortByOrderThenId', () => {
 	it('should sort by order when order values differ', () => {
 		const input: SiteSchema['PortfolioPage'][] = [
 			createSchemaType('123e4567-e89b-12d3-a456-426614174001', 2),

@@ -1,10 +1,10 @@
 type SiteSchema = {
-	PortfolioPage: PortfolioPage;
+	Portfolio: Portfolio;
 };
 
 export type { SiteSchema };
 
-interface PortfolioPage {
+interface Portfolio {
 	id: string;
 	order: number;
 	imageComponents: Array<{

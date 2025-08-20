@@ -1,6 +1,6 @@
-import type { Image, Position, StyleWithSingleValue } from './_common';
+import type { Image, Position, StyleWithSingleValue } from './common';
 
-export interface PortfolioPage {
+interface Portfolio {
 	id: number;
 	order: number;
 	created_at: string;
@@ -16,3 +16,5 @@ interface ImageComponent {
 	widths: StyleWithSingleValue[];
 	image: Image;
 }
+
+export type { Portfolio };

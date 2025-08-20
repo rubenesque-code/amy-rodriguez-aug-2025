@@ -25,6 +25,8 @@ const config = {
 
 			'^data-processing': 'src/lib/data-processing',
 
+			'^db': 'src/lib/db',
+
 			'^files': 'src/lib/assets/_files',
 
 			'^helpers': 'src/lib/helpers',

@@ -1,7 +1,7 @@
 <script lang="ts" context="module">
-	import { validate } from '^lib/db/portfolio';
+	import { deepValidate } from '^db/portfolio/utils';
 	import type { Db, DeepPartial } from '^lib/types';
-	import { mapDbToSiteSchema } from '^lib/utils/transform-db-data/portfolio';
+	import { transformDbDataToSiteSchema } from '^lib/utils/transform-db/portfolio';
 	import { onMount } from 'svelte';
 
 	const input: DeepPartial<Db['PortfolioPage']> = {
@@ -55,7 +55,7 @@
 
 <script lang="ts">
 	onMount(() => {
-		const result = mapDbToSiteSchema(input as Db['PortfolioPage']);
-		console.log('result:', result);
+		const result = transformDbDataToSiteSchema(input as Db['PortfolioPage']);
+		// console.log('result:', result);
 	});
 </script>
