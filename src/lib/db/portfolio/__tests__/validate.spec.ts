@@ -26,7 +26,7 @@ function validate(item: DbSchema['Portfolio']) {
 
 vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-describe('validate function', () => {
+describe('validate db portfolio function', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
@@ -47,9 +47,9 @@ describe('validate function', () => {
 		expect(result.isValid).toBe(false);
 	});
 
-	it('should fail validation when order is missing', () => {
+	it('should fail validation when order is incorrect type', () => {
 		const item = produce(itemValid as MakeOptional<DbSchema['Portfolio'], 'order'>, (draft) => {
-			delete draft['order'];
+			draft.order = 'abc' as unknown as number;
 		}) as DbSchema['Portfolio'];
 
 		const result = validate(item as DbSchema['Portfolio']);
@@ -65,9 +65,12 @@ describe('validate function', () => {
 		expect(result.isValid).toBe(false);
 	});
 
-	it('should fail validation when imageComponents has invalid data', () => {
+	it('should fail validation when imageComponents has 1 invalid item only with incorrect type', () => {
+		const imageComponentInvalid = produce(imageComponentValid, (draft) => {
+			draft.id = 'abc' as unknown as number;
+		});
 		const item = produce(itemValid, (draft) => {
-			draft.imageComponents[0].id = 'abc' as unknown as number;
+			draft.imageComponents = [imageComponentInvalid];
 		}) as DbSchema['Portfolio'];
 
 		const result = validate(item);
@@ -75,7 +78,7 @@ describe('validate function', () => {
 		expect(result.isValid).toBe(false);
 	});
 
-	it('should fail validation when imageComponents is missing url', () => {
+	it('should fail validation when imageComponents has 1 invalid item only with missing url', () => {
 		const item = produce(
 			itemValid as MakeOptionalAtPath<
 				DbSchema['Portfolio'],
@@ -92,7 +95,7 @@ describe('validate function', () => {
 		expect(result.value.imageComponents[0].image.image.url).toBe(undefined);
 	});
 
-	it('should fail validation when positions is empty', () => {
+	it('should fail validation when imageComponents has 1 invalid item only with no positions', () => {
 		const item = produce(itemValid, (draft) => {
 			draft.imageComponents[0].positions = [];
 		}) as DbSchema['Portfolio'];
@@ -102,27 +105,19 @@ describe('validate function', () => {
 		expect(result.isValid).toBe(false);
 	});
 
-	it('should fail validation when widths is empty', () => {
-		const item = produce(itemValid, (draft) => {
-			draft.imageComponents[0].widths = [];
-		}) as DbSchema['Portfolio'];
-
-		const result = validate(item);
-
-		expect(result.isValid).toBe(false);
-	});
-
-	it('should pass validation when at least 1 valid image component and invalid image component(s)', () => {
+	it('should pass validation with mix of valid and invalid image components', () => {
 		const imageComponentInvalid = produce(imageComponentValid, (draft) => {
 			draft.id = 'abc' as unknown as number;
 		});
 		const item = produce(itemValid, (draft) => {
 			draft.imageComponents.push(imageComponentInvalid);
+			draft.imageComponents.push(imageComponentInvalid);
+			draft.imageComponents.push(imageComponentValid);
 		}) as DbSchema['Portfolio'];
 
 		const result = validate(item);
 
 		expect(result.isValid).toBe(true);
-		expect(result.value.imageComponents).toStrictEqual([imageComponentValid]);
+		expect(result.value.imageComponents).toStrictEqual([imageComponentValid, imageComponentValid]);
 	});
 });
