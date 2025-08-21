@@ -1,8 +1,11 @@
-import { portfolioSchema } from './joi-schema';
+import type { MyOmit } from '^types';
 import type { DbSchema } from '^db/~types';
+import { productSchema } from './joi-schema';
 
-function sanitisePortfolio(item: DbSchema['Portfolio']): null | DbSchema['Portfolio'] {
-	const { error, value } = portfolioSchema.validate(item, {
+function sanitiseProduct(
+	item: DbSchema['Product']
+): null | MyOmit<DbSchema['Product'], 'collections' | 'created_at' | 'updated_at'> {
+	const { error, value } = productSchema.validate(item, {
 		abortEarly: false,
 		convert: false
 	});
@@ -15,4 +18,4 @@ function sanitisePortfolio(item: DbSchema['Portfolio']): null | DbSchema['Portfo
 	return value;
 }
 
-export { sanitisePortfolio };
+export { sanitiseProduct };

@@ -12,12 +12,12 @@ const imageComponentSchema = buildSchema<DbSchema['Product']['images'][number]>(
 	image: Joi.object({
 		image: Joi.object({
 			url: Joi.string().required()
-		}).unknown()
-	}).unknown(),
+		}).options({ stripUnknown: true })
+	}).options({ stripUnknown: true }),
 	positions: positionsSchema,
 	shopHomeStatus: Joi.string().optional(),
 	widths: stylesDefaultSchema
-}).unknown();
+}).options({ stripUnknown: true });
 
 const imageComponentsSchema = Joi.array()
 	.custom((value, helpers) => {
@@ -45,18 +45,18 @@ const textComponentSchema = buildSchema<DbSchema['TextComponent']>({
 });
 
 const textComponentsSchema = Joi.array()
-	.custom((value, helpers) => {
+	.custom((value) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const validTextComponents = (value as any[]).filter((component) => {
 			const { error } = textComponentSchema.validate(component, { convert: false });
 			return !error;
 		});
 
-		if (validTextComponents.length === 0) {
+		/* 		if (validTextComponents.length === 0) {
 			return helpers.error('any.invalid', {
 				message: 'At least one valid image component required'
 			});
-		}
+		} */
 
 		return validTextComponents;
 	})
@@ -75,7 +75,7 @@ const productSchema = buildSchema<
 	shopHomeImgPositions: positionsSchema,
 	shopHomeImgWidths: stylesDefaultSchema,
 	shopifyId: Joi.string().required(),
-	textAlignmentPosition: positionsSchema
+	textAlignmentPosition: positionsSchema.optional()
 }).options({ stripUnknown: true });
 
 export { productSchema };
