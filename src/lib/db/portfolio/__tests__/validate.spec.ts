@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { produce } from 'immer';
 
 import type { DbSchema } from '^db/~types';
-import { schema } from '../joi-schema';
+import { portfolioSchema } from '../joi-schema';
 import { imageComponentValid, itemValid } from './mock-data';
 import type { MakeOptional, MakeOptionalAtPath } from '^lib/types';
 
@@ -11,7 +11,7 @@ import type { MakeOptional, MakeOptionalAtPath } from '^lib/types';
 // - descripe 'shallow fields'...
 
 function validate(item: DbSchema['Portfolio']) {
-	const { error, value } = schema.validate(item, {
+	const { error, value } = portfolioSchema.validate(item, {
 		abortEarly: false,
 		allowUnknown: true,
 		convert: false
