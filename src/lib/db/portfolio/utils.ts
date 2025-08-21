@@ -1,7 +1,10 @@
+import type { MyOmit } from '^lib/types';
 import { portfolioSchema } from './joi-schema';
 import type { DbSchema } from '^db/~types';
 
-function sanitisePortfolio(item: DbSchema['Portfolio']): null | DbSchema['Portfolio'] {
+function sanitisePortfolio(
+	item: DbSchema['Portfolio']
+): null | MyOmit<DbSchema['Portfolio'], 'created_at' | 'updated_at'> {
 	const { error, value } = portfolioSchema.validate(item, {
 		abortEarly: false,
 		convert: false

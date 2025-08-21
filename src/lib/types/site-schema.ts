@@ -12,13 +12,13 @@ interface Portfolio {
 }
 
 type Product = {
-	addToCartButton?: Array<TextComponent>;
+	addToCartButton?: TextComponent;
 	id: number;
 	images: Array<ImageComponent & { shopHomeStatus?: string }>;
-	productDiscount?: Array<TextComponent>;
-	productViewDescription?: Array<TextComponent>;
-	productViewPrice?: Array<TextComponent>;
-	productViewTitle?: Array<TextComponent>;
+	productDiscount?: TextComponent;
+	productViewDescription?: TextComponent;
+	productViewPrice?: TextComponent;
+	productViewTitle?: TextComponent;
 	shopHomeImgPositions: Array<Position>;
 	shopHomeImgWidths: Array<StyleDefault>;
 	shopifyId: string;

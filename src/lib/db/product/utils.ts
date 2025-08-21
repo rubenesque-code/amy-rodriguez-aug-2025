@@ -1,5 +1,5 @@
-import type { MyOmit } from '^types';
 import type { DbSchema } from '^db/~types';
+import type { MyOmit } from '^types';
 import { productSchema } from './joi-schema';
 
 function sanitiseProduct(
@@ -11,6 +11,7 @@ function sanitiseProduct(
 	});
 
 	if (error) {
+		console.log('error:', error);
 		console.warn(`Item ${item.id} failed type validation:`, error.details);
 		return null;
 	}

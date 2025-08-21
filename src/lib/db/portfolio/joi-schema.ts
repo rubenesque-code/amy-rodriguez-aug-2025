@@ -21,18 +21,18 @@ const imageComponentSchema = buildSchema<ImageComponent>({
 }).unknown();
 
 const imageComponentsSchema = Joi.array()
-	.custom((value, helpers) => {
+	.custom((value) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const validImageComponents = (value as any[]).filter((component) => {
 			const { error } = imageComponentSchema.validate(component, { convert: false });
 			return !error;
 		});
 
-		if (validImageComponents.length === 0) {
+		/* 		if (validImageComponents.length === 0) {
 			return helpers.error('any.invalid', {
 				message: 'At least one valid image component required'
 			});
-		}
+		} */
 
 		return validImageComponents;
 	})
@@ -41,7 +41,7 @@ const imageComponentsSchema = Joi.array()
 const portfolioSchema = buildSchema<MyOmit<DbSchema['Portfolio'], 'created_at' | 'updated_at'>>({
 	id: Joi.number().required(),
 	order: Joi.number().required(),
-	imageComponents: imageComponentsSchema
+	imageComponents: imageComponentsSchema.min(1)
 }).options({ stripUnknown: true });
 
 export { portfolioSchema };

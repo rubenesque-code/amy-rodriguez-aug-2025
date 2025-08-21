@@ -92,7 +92,6 @@ describe('validate db portfolio function', () => {
 		const result = validate(item);
 
 		expect(result.isValid).toBe(false);
-		expect(result.value.imageComponents[0].image.image.url).toBe(undefined);
 	});
 
 	it('should fail validation when imageComponents has 1 invalid item only with no positions', () => {

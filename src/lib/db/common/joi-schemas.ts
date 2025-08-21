@@ -11,18 +11,12 @@ const positionSchema = buildSchema<DbSchema['Position']>({
 });
 
 const positionsSchema = Joi.array()
-	.custom((value, helpers) => {
+	.custom((value) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const validPositions = (value as any[]).filter((pos) => {
 			const { error } = positionSchema.validate(pos, { convert: false });
 			return !error;
 		});
-
-		if (validPositions.length === 0) {
-			return helpers.error('any.invalid', {
-				message: 'At least one valid position required'
-			});
-		}
 
 		return validPositions;
 	})
@@ -35,18 +29,12 @@ const styleDefaultSchema = buildSchema<DbSchema['StyleDefault']>({
 });
 
 const stylesDefaultSchema = Joi.array()
-	.custom((value, helpers) => {
+	.custom((value) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const validStyles = (value as any[]).filter((style) => {
 			const { error } = styleDefaultSchema.validate(style, { convert: false });
 			return !error;
 		});
-
-		if (validStyles.length === 0) {
-			return helpers.error('any.invalid', {
-				message: 'At least one valid style required'
-			});
-		}
 
 		return validStyles;
 	})
@@ -59,29 +47,23 @@ const textComponentSchema = buildSchema<DbSchema['TextComponent']>({
 	positions: Joi.array().items(positionSchema).min(1).required()
 });
 
-const textComponentsSchema = Joi.array()
-	.custom((value, helpers) => {
+/* const textComponentsSchema = Joi.array()
+	.custom((value) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const validTextComponents = (value as any[]).filter((text) => {
 			const { error } = textComponentSchema.validate(text, { convert: false });
 			return !error;
 		});
 
-		if (validTextComponents.length === 0) {
-			return helpers.error('any.invalid', {
-				message: 'At least one valid text component required'
-			});
-		}
-
 		return validTextComponents;
 	})
-	.required();
+	.required(); */
 
 export {
 	positionSchema,
 	positionsSchema,
 	styleDefaultSchema,
 	stylesDefaultSchema,
-	textComponentSchema,
-	textComponentsSchema
+	textComponentSchema
+	// textComponentsSchema
 };

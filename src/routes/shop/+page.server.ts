@@ -2,34 +2,28 @@ import { error } from '@sveltejs/kit';
 
 import { PUBLIC_STRAPI_API_URL } from '$env/static/public';
 
-import type { SiteSchema } from '^types';
 import { type DbSchema, endPoint } from '^db';
-import { sanitisePortfolio } from '^db/portfolio';
-import { compareByOrderThenId, mapPortfolioToSite } from '^utils/portfolio';
+import { sanitiseProduct } from '^db/product';
+// import { compareByOrderThenId, mapPortfolioToSite } from '^utils/portfolio';
 
 export async function load() {
 	if (!PUBLIC_STRAPI_API_URL) {
 		throw error(500, 'Configuration error: STRAPI API URL is missing');
 	}
 
-	const portfolioRes = await fetch(PUBLIC_STRAPI_API_URL + endPoint.portfolio);
+	const productsRes = await fetch(PUBLIC_STRAPI_API_URL + endPoint.products);
 
-	if (!portfolioRes.ok) {
-		throw error(
-			portfolioRes.status,
-			`Failed to fetch portfolio entities: ${portfolioRes.statusText}`
-		);
+	if (!productsRes.ok) {
+		throw error(productsRes.status, `Failed to fetch products entities: ${productsRes.statusText}`);
 	}
 
-	const portfoliosRaw: DbSchema['Portfolio'][] = await portfolioRes.json();
+	const productsRaw: DbSchema['Product'][] = await productsRes.json();
 
-	const portfolios: SiteSchema['Portfolio'][] = portfoliosRaw
-		.map(sanitisePortfolio)
-		.filter((p): p is DbSchema['Portfolio'] => p !== null)
-		.map(mapPortfolioToSite)
-		.sort(compareByOrderThenId);
+	const products = productsRaw
+		.map(sanitiseProduct)
+		.filter((p): p is DbSchema['Product'] => p !== null);
 
-	return { portfolios };
+	return { products, productsRaw };
 }
 
 export const prerender = true;
