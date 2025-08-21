@@ -27,4 +27,13 @@ type TextComponent = {
 	positions: Position[];
 };
 
-export type { StyleDefault, Image, Position, TextComponent };
+interface ImageComponent {
+	id: number;
+	image: Image;
+	order: number;
+	layer: number;
+	positions: Position[];
+	widths: StyleDefault[];
+}
+
+export type { StyleDefault, Image, Position, TextComponent, ImageComponent };

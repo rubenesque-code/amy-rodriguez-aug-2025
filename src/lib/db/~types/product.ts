@@ -1,4 +1,4 @@
-import type { Image, Position, StyleDefault, TextComponent } from './common';
+import type { ImageComponent, Position, StyleDefault, TextComponent } from './common';
 
 type Product = {
 	addToCartButton?: TextComponent;
@@ -16,15 +16,6 @@ type Product = {
 	textAlignmentPosition?: Position[];
 	updated_at: string;
 };
-
-interface ImageComponent {
-	id: number;
-	image: Image;
-	order: number;
-	layer: number;
-	positions: Position[];
-	widths: StyleDefault[];
-}
 
 interface Collection {
 	id: number;

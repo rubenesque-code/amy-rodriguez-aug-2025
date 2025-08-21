@@ -1,8 +1,11 @@
 import Joi from 'joi';
 
 import { positionsSchema, stylesDefaultSchema } from '^db/common';
+import { buildSchema } from '^lib/utils/joi';
+import type { DbSchema } from '^db/~types';
+import type { MyOmit } from '^lib/types';
 
-const imageComponentSchema = Joi.object({
+const imageComponentSchema = buildSchema<DbSchema['Product']['images'][number]>({
 	id: Joi.number().required(),
 	layer: Joi.number().required(),
 	order: Joi.number().required(),
@@ -12,6 +15,7 @@ const imageComponentSchema = Joi.object({
 		}).unknown()
 	}).unknown(),
 	positions: positionsSchema,
+	shopHomeStatus: Joi.string().optional(),
 	widths: stylesDefaultSchema
 }).unknown();
 
@@ -33,10 +37,45 @@ const imageComponentsSchema = Joi.array()
 	})
 	.required();
 
-const productSchema = Joi.object({
+const textComponentSchema = buildSchema<DbSchema['TextComponent']>({
 	id: Joi.number().required(),
-	order: Joi.number().required(),
-	imageComponents: imageComponentsSchema
+	fontSizes: stylesDefaultSchema,
+	fontWeights: stylesDefaultSchema,
+	positions: positionsSchema
+});
+
+const textComponentsSchema = Joi.array()
+	.custom((value, helpers) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const validTextComponents = (value as any[]).filter((component) => {
+			const { error } = textComponentSchema.validate(component, { convert: false });
+			return !error;
+		});
+
+		if (validTextComponents.length === 0) {
+			return helpers.error('any.invalid', {
+				message: 'At least one valid image component required'
+			});
+		}
+
+		return validTextComponents;
+	})
+	.required();
+
+const productSchema = buildSchema<
+	MyOmit<DbSchema['Product'], 'collections' | 'created_at' | 'updated_at'>
+>({
+	addToCartButton: textComponentsSchema.optional(),
+	id: Joi.number().required(),
+	images: imageComponentsSchema,
+	productDiscount: textComponentsSchema.optional(),
+	productViewDescription: textComponentsSchema.optional(),
+	productViewPrice: textComponentsSchema.optional(),
+	productViewTitle: textComponentsSchema.optional(),
+	shopHomeImgPositions: positionsSchema,
+	shopHomeImgWidths: stylesDefaultSchema,
+	shopifyId: Joi.string().required(),
+	textAlignmentPosition: positionsSchema
 }).options({ stripUnknown: true });
 
 export { productSchema };

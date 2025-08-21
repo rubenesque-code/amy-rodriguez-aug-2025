@@ -1,4 +1,4 @@
-import type { Image, Position, StyleDefault } from './common';
+import type { ImageComponent, Position, StyleDefault } from './common';
 
 interface Portfolio {
 	id: number;
@@ -6,15 +6,6 @@ interface Portfolio {
 	created_at: string;
 	updated_at: string;
 	imageComponents: ImageComponent[];
-}
-
-interface ImageComponent {
-	id: number;
-	layer: number;
-	order: number;
-	positions: Position[];
-	widths: StyleDefault[];
-	image: Image;
 }
 
 export type { Portfolio };

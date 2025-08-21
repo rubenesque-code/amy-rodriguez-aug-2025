@@ -4,7 +4,7 @@ import { PUBLIC_STRAPI_API_URL } from '$env/static/public';
 
 import type { SiteSchema } from '^types';
 import { type DbSchema, endPoint } from '^db';
-import { sanitisePortfolio as sanitizePortfolio } from '^db/portfolio';
+import { sanitisePortfolio } from '^db/portfolio';
 import { compareByOrderThenId, mapPortfolioToSite } from '^utils/portfolio';
 
 export async function load() {
@@ -24,7 +24,7 @@ export async function load() {
 	const portfoliosRaw: DbSchema['Portfolio'][] = await portfolioRes.json();
 
 	const portfolios: SiteSchema['Portfolio'][] = portfoliosRaw
-		.map(sanitizePortfolio)
+		.map(sanitisePortfolio)
 		.filter((p): p is DbSchema['Portfolio'] => p !== null)
 		.map(mapPortfolioToSite)
 		.sort(compareByOrderThenId);
