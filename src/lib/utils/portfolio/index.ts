@@ -1,7 +1,7 @@
 import type { DbSchema } from '^db';
 import type { SiteSchema } from '^types';
 
-function transformDbDataToSiteSchema(item: DbSchema['Portfolio']): SiteSchema['Portfolio'] {
+function mapPortfolioToSite(item: DbSchema['Portfolio']): SiteSchema['Portfolio'] {
 	return {
 		id: crypto.randomUUID(),
 		order: item.order,
@@ -29,4 +29,4 @@ function compareByOrderThenId(a: SiteSchema['Portfolio'], b: SiteSchema['Portfol
 	return a.id.localeCompare(b.id);
 }
 
-export { transformDbDataToSiteSchema, compareByOrderThenId };
+export { mapPortfolioToSite, compareByOrderThenId };

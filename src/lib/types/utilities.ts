@@ -4,9 +4,9 @@ type DeepPartial<T> = {
 	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-type PathSplit<S extends string> = S extends `${infer Head}.${infer Rest}`
-	? [Head, ...PathSplit<Rest>]
-	: [S];
+type MyOmit<T, K extends keyof T> = HandleEmptyObject<Pick<T, Exclude<keyof T, K>>>;
+
+type HandleEmptyObject<T> = T extends Record<string, never> ? void : T;
 
 // --- path helpers ---
 type Split<Path extends string> = Path extends `${infer H}.${infer R}` ? [H, ...Split<R>] : [Path];
@@ -45,4 +45,4 @@ type SetOptionalProp<T, K extends PropertyKey, V> = Omit<T, Extract<K, keyof T>>
 	[P in Extract<K, keyof T>]?: V;
 };
 
-export type { MakeOptional, DeepPartial, MakeOptionalAtPath };
+export type { MakeOptional, DeepPartial, MakeOptionalAtPath, MyOmit };

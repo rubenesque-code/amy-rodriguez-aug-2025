@@ -1,18 +1,9 @@
+import Joi from 'joi';
+
 import type { DbSchema } from '^db/~types';
-import Joi, { type ObjectSchema, type Schema } from 'joi';
+import { buildSchema } from '^utils/joi';
 
-function buildSchema<T extends object>(schema: { [K in keyof T]-?: Schema }): ObjectSchema<T> {
-	return Joi.object(schema) as ObjectSchema<T>;
-}
-
-const a = buildSchema<DbSchema['Position']>({
-	id: Joi.number().required(),
-	aspectRatio: Joi.number().required(),
-	x: Joi.number().required(),
-	y: Joi.number().required()
-});
-
-const positionSchema = Joi.object<DbSchema['Position']>({
+const positionSchema = buildSchema<DbSchema['Position']>({
 	id: Joi.number().required(),
 	aspectRatio: Joi.number().required(),
 	x: Joi.number().required(),
@@ -37,7 +28,7 @@ const positionsSchema = Joi.array()
 	})
 	.required();
 
-const styleDefaultSchema = Joi.object({
+const styleDefaultSchema = buildSchema<DbSchema['StyleDefault']>({
 	id: Joi.number().required(),
 	aspectRatio: Joi.number().required(),
 	value: Joi.number().required()
@@ -61,7 +52,7 @@ const stylesDefaultSchema = Joi.array()
 	})
 	.required();
 
-const textComponentSchema = Joi.object({
+const textComponentSchema = buildSchema<DbSchema['TextComponent']>({
 	id: Joi.number().required(),
 	fontSizes: Joi.array().items(styleDefaultSchema).min(1).required(),
 	fontWeights: Joi.array().items(styleDefaultSchema).min(1).required(),

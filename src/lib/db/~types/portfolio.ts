@@ -1,4 +1,4 @@
-import type { Image, Position, StyleWithSingleValue } from './common';
+import type { Image, Position, StyleDefault } from './common';
 
 interface Portfolio {
 	id: number;
@@ -13,7 +13,7 @@ interface ImageComponent {
 	layer: number;
 	order: number;
 	positions: Position[];
-	widths: StyleWithSingleValue[];
+	widths: StyleDefault[];
 	image: Image;
 }
 

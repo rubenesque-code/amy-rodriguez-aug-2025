@@ -5,14 +5,11 @@ import { PUBLIC_STRAPI_API_URL } from '$env/static/public';
 import type { SiteSchema } from '^types';
 import { type DbSchema, endPoint } from '^db';
 import { sanitisePortfolio as sanitizePortfolio } from '^db/portfolio';
-import {
-	compareByOrderThenId,
-	transformDbDataToSiteSchema as mapPortfolioToSite
-} from '^utils/portfolio';
+import { compareByOrderThenId, mapPortfolioToSite } from '^utils/portfolio';
 
 export async function load() {
 	if (!PUBLIC_STRAPI_API_URL) {
-		throw error(500, 'Configuration error: API URL is missing');
+		throw error(500, 'Configuration error: STRAPI API URL is missing');
 	}
 
 	const portfolioRes = await fetch(PUBLIC_STRAPI_API_URL + endPoint.portfolio);

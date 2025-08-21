@@ -1,4 +1,4 @@
-import type { Image, Position, StyleWithSingleValue, TextComponent } from './common';
+import type { Image, Position, StyleDefault, TextComponent } from './common';
 
 type Product = {
 	addToCartButton?: TextComponent;
@@ -11,7 +11,7 @@ type Product = {
 	productViewPrice?: TextComponent;
 	productViewTitle?: TextComponent;
 	shopHomeImgPositions: Position[];
-	shopHomeImgWidths: StyleWithSingleValue[];
+	shopHomeImgWidths: StyleDefault[];
 	shopifyId: string;
 	textAlignmentPosition?: Position[];
 	updated_at: string;
@@ -23,14 +23,14 @@ interface ImageComponent {
 	order: number;
 	layer: number;
 	positions: Position[];
-	widths: StyleWithSingleValue[];
+	widths: StyleDefault[];
 }
 
 interface Collection {
 	id: number;
 	collectionId: string;
 	positions: Position[];
-	widths: StyleWithSingleValue[];
+	widths: StyleDefault[];
 }
 
 export type { Product };

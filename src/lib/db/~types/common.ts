@@ -14,7 +14,7 @@ interface Position {
 	y: number;
 }
 
-interface StyleWithSingleValue {
+interface StyleDefault {
 	id: number;
 	aspectRatio: number;
 	value: number;
@@ -22,9 +22,9 @@ interface StyleWithSingleValue {
 
 type TextComponent = {
 	id: number;
-	fontSizes: StyleWithSingleValue[];
-	fontWeights: StyleWithSingleValue[];
+	fontSizes: StyleDefault[];
+	fontWeights: StyleDefault[];
 	positions: Position[];
 };
 
-export type { StyleWithSingleValue, Image, Position, TextComponent };
+export type { StyleDefault, Image, Position, TextComponent };

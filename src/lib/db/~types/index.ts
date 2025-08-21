@@ -1,11 +1,11 @@
 import type { Portfolio } from './portfolio';
 import type { Product } from './product';
-import type { StyleWithSingleValue, TextComponent, Position } from './common';
+import type { StyleDefault, TextComponent, Position } from './common';
 
 type DbSchema = {
 	Portfolio: Portfolio;
 	Product: Product;
-	StyleWithSingleValue: StyleWithSingleValue;
+	StyleDefault: StyleDefault;
 	TextComponent: TextComponent;
 	Position: Position;
 };

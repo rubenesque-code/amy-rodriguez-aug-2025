@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { DbSchema } from '^db/~types/common';
 import type { DeepPartial, SiteSchema } from '^lib/types';
 
-import { transformDbDataToSiteSchema, compareByOrderThenId } from '../index';
+import { mapPortfolioToSite, compareByOrderThenId } from '../index';
 
 const mockUUIDs = [
 	'123e4567-e89b-12d3-a456-426614174000',
@@ -76,7 +76,7 @@ describe('mapDbToSiteSchema', () => {
 			]
 		};
 
-		const result = transformDbDataToSiteSchema(input as DbSchema['PortfolioPage']);
+		const result = mapPortfolioToSite(input as DbSchema['PortfolioPage']);
 
 		expect(result).toEqual({
 			id: '123e4567-e89b-12d3-a456-426614174000',

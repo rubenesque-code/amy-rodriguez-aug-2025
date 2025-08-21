@@ -1,18 +1,13 @@
 import Joi from 'joi';
 
 import { positionsSchema, stylesDefaultSchema } from '^db/common';
-import { buildSchema } from '^lib/utils/joi';
-import type { DbSchema } from '^db/~types';
-import type { MyOmit } from '^types';
 
-type ImageComponent = DbSchema['Portfolio']['imageComponents'][number];
-
-const imageComponentSchema = buildSchema<ImageComponent>({
+const imageComponentSchema = Joi.object({
 	id: Joi.number().required(),
 	layer: Joi.number().required(),
 	order: Joi.number().required(),
-	image: buildSchema<Pick<ImageComponent['image'], 'image'>>({
-		image: buildSchema<Pick<ImageComponent['image']['image'], 'url'>>({
+	image: Joi.object({
+		image: Joi.object({
 			url: Joi.string().required()
 		}).unknown()
 	}).unknown(),
@@ -38,10 +33,10 @@ const imageComponentsSchema = Joi.array()
 	})
 	.required();
 
-const portfolioSchema = buildSchema<MyOmit<DbSchema['Portfolio'], 'created_at' | 'updated_at'>>({
+const productSchema = Joi.object({
 	id: Joi.number().required(),
 	order: Joi.number().required(),
 	imageComponents: imageComponentsSchema
 }).options({ stripUnknown: true });
 
-export { portfolioSchema };
+export { productSchema };
