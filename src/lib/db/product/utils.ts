@@ -1,33 +1,14 @@
 import Joi from 'joi';
 
 import type { DbSchema } from '^db';
-
-const positionSchema = Joi.object({
-	id: Joi.number().required(),
-	aspectRatio: Joi.number().required(),
-	x: Joi.number().required(),
-	y: Joi.number().required()
-});
-
-const styleWithSingleValueSchema = Joi.object({
-	id: Joi.number().required(),
-	aspectRatio: Joi.number().required(),
-	value: Joi.number().required()
-});
-
-const textComponentSchema = Joi.object({
-	id: Joi.number().required(),
-	fontSizes: Joi.array().items(styleWithSingleValueSchema).min(1).required(),
-	fontWeights: Joi.array().items(styleWithSingleValueSchema).min(1).required(),
-	positions: Joi.array().items(positionSchema).min(1).required()
-}).optional();
+import { positionSchema, styleDefaultSchema, textComponentSchema } from '^db/common';
 
 const imageSchema = Joi.object({
 	id: Joi.number().required(),
 	order: Joi.number().required(),
 	layer: Joi.number().required(),
 	positions: Joi.array().items(positionSchema).min(1).required(),
-	widths: Joi.array().items(styleWithSingleValueSchema).min(1).required(),
+	widths: Joi.array().items(styleDefaultSchema).min(1).required(),
 	image: Joi.object({
 		image: Joi.object({
 			url: Joi.string().required()
@@ -40,7 +21,7 @@ const productSchema = Joi.object({
 	id: Joi.number().required(),
 	images: Joi.array().items(imageSchema).min(1).required(),
 	shopHomeImgPositions: Joi.array().items(positionSchema).min(1).required(),
-	shopHomeImgWidths: Joi.array().items(styleWithSingleValueSchema).min(1).required(),
+	shopHomeImgWidths: Joi.array().items(styleDefaultSchema).min(1).required(),
 	shopifyId: Joi.string().required(),
 	addToCartButton: textComponentSchema,
 	productDiscount: textComponentSchema,

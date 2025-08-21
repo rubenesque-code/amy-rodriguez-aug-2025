@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { DbSchema } from '^db';
-import { positionSchema } from '../utils';
+import { positionSchema } from '../joi-schemas';
 import Joi from 'joi';
 
 function validatePosition(item: DbSchema['Position']) {

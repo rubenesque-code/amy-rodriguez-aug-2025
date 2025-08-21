@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	import { deepValidate } from '^db/portfolio/utils';
+	import { sanitisePortfolio } from '^db/portfolio/utils';
 	import type { Db, DeepPartial } from '^lib/types';
 	import { transformDbDataToSiteSchema } from '^lib/utils/transform-db/portfolio';
 	import { onMount } from 'svelte';

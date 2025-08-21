@@ -2,7 +2,7 @@ import Joi from 'joi';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { DbSchema } from '^db';
-import { positionSchema } from '../utils';
+import { positionSchema } from '../joi-schemas';
 
 const validPosition: DbSchema['Position'] = {
 	id: 123,
