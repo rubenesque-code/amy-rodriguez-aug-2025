@@ -11,7 +11,6 @@ function sanitiseProduct(
 	});
 
 	if (error) {
-		console.log('error:', error);
 		console.warn(`Item ${item.id} failed type validation:`, error.details);
 		return null;
 	}
