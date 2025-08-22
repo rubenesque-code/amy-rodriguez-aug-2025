@@ -1,6 +1,7 @@
 type SiteSchema = {
 	Portfolio: Portfolio;
-	Product: Product;
+	ProductDb: ProductDb;
+	ProductShopify: ProductShopify;
 };
 
 export type { SiteSchema };
@@ -11,7 +12,7 @@ interface Portfolio {
 	imageComponents: Array<ImageComponent>;
 }
 
-type Product = {
+type ProductDb = {
 	addToCartButton?: TextComponent;
 	id: number;
 	images: Array<ImageComponent & { shopHomeStatus?: string }>;
@@ -23,6 +24,16 @@ type Product = {
 	shopHomeImgWidths: Array<StyleDefault>;
 	shopifyId: string;
 	textAlignmentPosition?: Array<Position>;
+};
+
+type ProductShopify = {
+	availableForSale: boolean;
+	preSalePrice: number | null;
+	variantId: string;
+	price: number;
+	description: string;
+	id: string;
+	title: string;
 };
 
 type StyleDefault = {

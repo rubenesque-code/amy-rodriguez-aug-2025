@@ -43,6 +43,8 @@ const config = {
 
 			'^services': 'src/lib/services',
 
+			'^shopify': 'src/lib/shopify',
+
 			'^stores': 'src/lib/stores',
 
 			'^structured-data-parts': 'src/lib/structured-data-parts',

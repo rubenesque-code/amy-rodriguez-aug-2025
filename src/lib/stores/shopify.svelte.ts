@@ -13,12 +13,14 @@ import {
 	type CartCreateRes,
 	type ProductQueryRes
 } from '^helpers/shopify';
-import type { Shopify } from '^lib/types';
+import type { Shopify, SiteSchema } from '^lib/types';
+import { purifyProduct, sanitiseProduct } from '^shopify/product';
+import { mapToSite } from '^utils/product-shopify';
 
 interface ShopifyState {
 	client: StorefrontApiClient | null;
 	cart: Shopify['Cart'] | null;
-	products: Shopify['Product'][] | null;
+	products: SiteSchema['ProductShopify'][] | null;
 	initialized: boolean;
 }
 
@@ -90,7 +92,13 @@ async function fetchProducts() {
 			throw new Error('Invalid products data structure received');
 		}
 
-		shopifyState.products = res.data.products.edges.map((edge) => edge.node);
+		const productsRaw = res.data.products.edges.map((edge) => edge.node);
+
+		shopifyState.products = productsRaw
+			.map(sanitiseProduct)
+			.filter((p): p is Shopify['Product'] => p !== null)
+			.map(purifyProduct)
+			.map(mapToSite);
 
 		// return shopifyState.products;
 	} catch (error) {

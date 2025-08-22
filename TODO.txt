@@ -13,6 +13,16 @@ IMPORTANT
 - max width for portfolio, press, shop pages?
 - prev/next product
 
+GOOD TO HAVE
+------------
+- buildSchema handles nested objects and properties
+
 CHECKLIST
 ---------
 - env variables
+
+TESTING
+-------
+- will conversion of shopify amount always work?
+  - what if shopify changes the format...
+  - should test the function regardless

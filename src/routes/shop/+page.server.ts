@@ -4,7 +4,6 @@ import { PUBLIC_STRAPI_API_URL } from '$env/static/public';
 
 import { type DbSchema, endPoint } from '^db';
 import { sanitiseProduct } from '^db/product';
-// import { compareByOrderThenId, mapPortfolioToSite } from '^utils/portfolio';
 
 export async function load() {
 	if (!PUBLIC_STRAPI_API_URL) {
@@ -19,11 +18,11 @@ export async function load() {
 
 	const productsRaw: DbSchema['Product'][] = await productsRes.json();
 
-	const products = productsRaw
+	const productsDb = productsRaw
 		.map(sanitiseProduct)
 		.filter((p): p is DbSchema['Product'] => p !== null);
 
-	return { products, productsRaw };
+	return { productsDb };
 }
 
 export const prerender = true;
