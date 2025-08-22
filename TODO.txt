@@ -1,0 +1,18 @@
+OPTIMISATIONS
+-------------
+- pre-load portfolio images
+
+NECESSARY
+---------
+- proper error handling
+  - don't find slug entity: portfolio page, product -> return 404
+- get shopify products not done recursively -> assumed will be <250 products
+
+IMPORTANT
+---------
+- max width for portfolio, press, shop pages?
+- prev/next product
+
+CHECKLIST
+---------
+- env variables

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@shopify/storefront-api-client':
+        specifier: ^1.0.9
+        version: 1.0.9
       immer:
         specifier: ^10.1.1
         version: 10.1.1
@@ -506,6 +509,12 @@ packages:
     resolution: {integrity: sha512-fi3cPxCnu3ZeM3EwKZPgXbWoGzm2XHgB/WShKI81uj8wG0+laobmqy5wbgEwzstlbLu4MyO8C19FyhhWseYKNQ==}
     cpu: [x64]
     os: [win32]
+
+  '@shopify/graphql-client@1.4.1':
+    resolution: {integrity: sha512-/w4Uchx8ueI8gwmJd1ZbbIGndsjfMEFlzmay3P7rya5zj7K308xne/ggIvWDweueIut2qf1A8lI58xQl9Pu22w==}
+
+  '@shopify/storefront-api-client@1.0.9':
+    resolution: {integrity: sha512-vgc0ZczMvrbsQQFYcIIONnIiqiafpcMyq5osI8X6PB65DhnmCQEp3kSlXKOjBPzyAWYvp28nLHS0+r4xsp4yQA==}
 
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
@@ -2195,6 +2204,12 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.46.3':
     optional: true
+
+  '@shopify/graphql-client@1.4.1': {}
+
+  '@shopify/storefront-api-client@1.0.9':
+    dependencies:
+      '@shopify/graphql-client': 1.4.1
 
   '@standard-schema/spec@1.0.0': {}
 
