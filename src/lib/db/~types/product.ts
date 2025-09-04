@@ -1,6 +1,7 @@
+import type { MyOmit } from '^lib/types';
 import type { ImageComponent, Position, StyleDefault, TextComponent } from './common';
 
-type Product = {
+type ProductRaw = {
 	addToCartButton?: TextComponent | null;
 	collections: Array<Collection>;
 	created_at: string;
@@ -17,6 +18,8 @@ type Product = {
 	updated_at: string;
 };
 
+type ProductProcessed = MyOmit<ProductRaw, 'collections' | 'created_at' | 'updated_at'>;
+
 interface Collection {
 	id: number;
 	collectionId: string;
@@ -24,4 +27,4 @@ interface Collection {
 	widths: StyleDefault[];
 }
 
-export type { Product };
+export type { ProductRaw, ProductProcessed };

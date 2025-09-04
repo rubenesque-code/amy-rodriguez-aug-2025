@@ -22,13 +22,15 @@ interface ShopifyState {
 	cart: Shopify['Cart'] | null;
 	products: SiteSchema['ProductShopify'][] | null;
 	initialized: boolean;
+	fetchProductsStatus: 'idle' | 'pending' | 'error' | 'success';
 }
 
 export const shopifyState = $state<ShopifyState>({
 	client: null,
 	cart: null,
 	products: null,
-	initialized: false
+	initialized: false,
+	fetchProductsStatus: 'idle'
 });
 
 export const shopifyHelper = {
@@ -43,45 +45,37 @@ export const shopifyHelper = {
 };
 
 function initializeClient() {
-	if (!shopifyState.initialized) {
-		try {
-			shopifyState.client = createStorefrontApiClient({
-				storeDomain: PUBLIC_SHOPIFY_STORE_DOMAIN,
-				apiVersion: '2025-07',
-				publicAccessToken: PUBLIC_SHOPIFY_STOREFRONT_TOKEN
-			});
-
-			if (!shopifyState.client) {
-				throw new Error('Shopify Client Init Error');
-			}
-		} catch (error) {
-			console.error('Failed to init Shopify client:', {
-				error,
-				timestamp: new Date().toISOString()
-			});
-		}
+	if (shopifyState.initialized) {
+		console.warn('Shopify Client already initialised');
+		return;
 	}
+
+	shopifyState.client = createStorefrontApiClient({
+		storeDomain: PUBLIC_SHOPIFY_STORE_DOMAIN,
+		apiVersion: '2025-07',
+		// publicAccessToken: 'fail'
+		publicAccessToken: PUBLIC_SHOPIFY_STOREFRONT_TOKEN
+	});
 }
 
 async function fetchProducts() {
 	try {
+		shopifyState.fetchProductsStatus = 'pending';
+
 		if (!shopifyState.client) {
 			initializeClient();
 		}
 
-		if (!shopifyState.client) {
-			throw new Error('Shopify Client Init Error');
-		}
-
-		const res: ClientResponse<ProductQueryRes> = await shopifyState.client.request(getProductsGql, {
-			variables: { first: 250 }
-		});
+		// createStorefontApiClient always returns an object
+		const res: ClientResponse<ProductQueryRes> = await shopifyState.client!.request(
+			getProductsGql,
+			{
+				variables: { first: 250 }
+			}
+		);
 
 		if (res.errors) {
-			console.error('GraphQLErrors', {
-				errors: res.errors
-			});
-			throw new Error(`GraphQL errors: ${res.errors}`);
+			throw new Error(`Product request error: ${JSON.stringify(res.errors)}`);
 		}
 
 		if (!res.data) {
@@ -100,12 +94,11 @@ async function fetchProducts() {
 			.map(purifyProduct)
 			.map(mapToSite);
 
-		// return shopifyState.products;
+		shopifyState.fetchProductsStatus = 'success';
 	} catch (error) {
-		console.error('Failed to fetch products:', {
-			error,
-			timestamp: new Date().toISOString()
-		});
+		shopifyState.fetchProductsStatus = 'error';
+
+		console.error('fetchProducts error', { error, timestamp: new Date().toISOString() });
 	}
 }
 

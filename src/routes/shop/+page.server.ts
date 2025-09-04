@@ -16,13 +16,15 @@ export async function load() {
 		throw error(productsRes.status, `Failed to fetch products entities: ${productsRes.statusText}`);
 	}
 
-	const productsRaw: DbSchema['Product'][] = await productsRes.json();
+	const productsRaw: DbSchema['ProductRaw'][] = await productsRes.json();
 
 	const productsDb = productsRaw
 		.map(sanitiseProduct)
-		.filter((p): p is DbSchema['Product'] => p !== null);
+		.filter((p): p is DbSchema['ProductProcessed'] => p !== null);
 
-	return { productsDb };
+	const productsDbMap = new Map(productsDb.map((p) => [p.shopifyId, p]));
+
+	return { productsDb: { array: productsDb, map: productsDbMap } };
 }
 
 export const prerender = true;

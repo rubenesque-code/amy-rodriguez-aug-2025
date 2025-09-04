@@ -1,10 +1,8 @@
-import type { DbSchema } from '^db/~types';
-import type { MyOmit } from '^types';
 import { productSchema } from './joi-schema';
 
-function sanitiseProduct(
-	item: DbSchema['Product']
-): null | MyOmit<DbSchema['Product'], 'collections' | 'created_at' | 'updated_at'> {
+import type { DbSchema } from '^db/~types';
+
+function sanitiseProduct(item: DbSchema['ProductRaw']): null | DbSchema['ProductProcessed'] {
 	const { error, value } = productSchema.validate(item, {
 		abortEarly: false,
 		convert: false
@@ -12,10 +10,11 @@ function sanitiseProduct(
 
 	if (error) {
 		console.warn(`Item ${item.id} failed type validation:`, error.details);
+
 		return null;
 	}
 
-	return value;
+	return value as DbSchema['ProductProcessed'];
 }
 
 export { sanitiseProduct };

@@ -1,7 +1,13 @@
+import type { DbSchema } from '^db';
+
 type SiteSchema = {
 	Portfolio: Portfolio;
 	ProductDb: ProductDb;
 	ProductShopify: ProductShopify;
+	ImageComponent: ImageComponent;
+	ShopProductDb: ShopProductDb;
+	Position: Position;
+	StyleDefault: StyleDefault;
 };
 
 export type { SiteSchema };
@@ -63,4 +69,8 @@ type ImageComponent = {
 	positions: Array<Position>;
 	url: string;
 	widths: Array<StyleDefault>;
+};
+
+type ShopProductDb = Pick<DbSchema['ProductProcessed'], 'id'> & {
+	image: Pick<SiteSchema['ImageComponent'], 'positions' | 'url' | 'widths'>;
 };
