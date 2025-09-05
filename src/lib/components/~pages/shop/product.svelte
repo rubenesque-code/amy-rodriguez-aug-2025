@@ -1,20 +1,21 @@
 <script lang="ts" module>
 	import { produce } from 'immer';
 
-	import type { Position, SiteSchema, StyleWithSingleValue } from '^lib/types';
 	import { createOptimisedImgUrl } from '^helpers';
+	import type { SiteSchema } from '^lib/types';
 </script>
 
 <script lang="ts">
 	let props: {
 		availableForSale: boolean;
 		imgUrl: string;
+		onMount: (arg0: { rect: DOMRect }) => void;
 		positions: SiteSchema['Position'][];
 		previousPrice: null | number;
 		price: number;
-		widths: SiteSchema['StyleDefault'][];
-		title: string;
 		shopifyId: string;
+		title: string;
+		widths: SiteSchema['StyleDefault'][];
 	} = $props();
 
 	let windowHeight = $state<number>(window.innerHeight || 0);
@@ -78,6 +79,14 @@
 		containerNode.style.left = `${position.x}vw`;
 		containerNode.style.top = `${position.y}vh`;
 		containerNode.style.width = `${width.value}vw`;
+	});
+
+	$effect(() => {
+		if (!containerNode) {
+			return;
+		}
+
+		props.onMount({ rect: containerNode.getBoundingClientRect() });
 	});
 </script>
 

@@ -3,9 +3,10 @@
 
 	import { shopifyHelper as shopifyApi, shopifyState } from '^lib/stores';
 
-	import { Product } from '^components/~pages/shop';
 	import type { SiteSchema } from '^types';
 	import type { DbSchema } from '^db';
+
+	import { Product, ProductNew } from '^components/~pages/shop';
 
 	// todo - test whether buildtimeerror actually leads to build fail
 
@@ -52,6 +53,23 @@
 			});
 	});
 
+	/* 	const products = $derived.by(() => {
+		if (!shopifyState.products || shopifyState.fetchProductsStatus !== 'success') {
+			return;
+		}
+
+		return shopifyState.products
+			.filter((productShopify) => buildTimeData.productsDb.map.has(productShopify.id))
+			.map((productShopify) => {
+				const productDb = buildTimeData.productsDb.map.get(productShopify.id)!;
+
+				return {
+					db: remapProductDbToShop(productDb),
+					shopify: productShopify
+				};
+			});
+	}); */
+
 	onMount(() => {
 		shopifyApi.products.fetch();
 	});
@@ -62,16 +80,32 @@
 {:else if shopifyState.fetchProductsStatus === 'error'}
 	ERROR
 {:else if shopifyState.fetchProductsStatus === 'success' && products}
-	{#each products as product}
-		<Product
-			availableForSale={product.shopify.availableForSale}
-			imgUrl={product.db.image.url}
-			positions={product.db.image.positions}
-			previousPrice={product.shopify.preSalePrice}
-			price={product.shopify.price}
-			shopifyId={product.shopify.id}
-			title={product.shopify.title}
-			widths={product.db.image.widths}
-		/>
-	{/each}
+	<div class="flex justify-center pb-60">
+		<div class="grid max-w-[1400px] grid-cols-2 gap-60">
+			{#each products as product}
+				<ProductNew
+					availableForSale={product.shopify.availableForSale}
+					imgUrl={product.db.image.url}
+					previousPrice={product.shopify.preSalePrice}
+					price={product.shopify.price}
+					shopifyId={product.shopify.id}
+					title={product.shopify.title}
+				/>
+				<!-- 			<Product
+				availableForSale={product.shopify.availableForSale}
+				imgUrl={product.db.image.url}
+				onMount={({ rect }) => {
+					console.log('rect:', rect);
+					let bottom = rect.bottom;
+				}}
+				positions={product.db.image.positions}
+				previousPrice={product.shopify.preSalePrice}
+				price={product.shopify.price}
+				shopifyId={product.shopify.id}
+				title={product.shopify.title}
+				widths={product.db.image.widths}
+			/> -->
+			{/each}
+		</div>
+	</div>
 {/if}
