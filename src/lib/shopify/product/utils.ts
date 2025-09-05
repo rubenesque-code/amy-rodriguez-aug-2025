@@ -1,4 +1,4 @@
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import { produce } from 'immer';
 
 import type { Shopify } from '^shopify/~types';

@@ -88,13 +88,17 @@ async function fetchProducts() {
 
 		const productsRaw = res.data.products.edges.map((edge) => edge.node);
 
-		shopifyState.products = productsRaw
+		const products = productsRaw
 			.map(sanitiseProduct)
 			.filter((p): p is Shopify['Product'] => p !== null)
 			.map(purifyProduct)
 			.map(mapToSite);
 
 		shopifyState.fetchProductsStatus = 'success';
+
+		shopifyState.products = products;
+
+		return products;
 	} catch (error) {
 		shopifyState.fetchProductsStatus = 'error';
 

@@ -55,6 +55,7 @@
 		"@shopify/storefront-api-client": "^1.0.9",
 		"dompurify": "^3.2.6",
 		"immer": "^10.1.1",
+		"isomorphic-dompurify": "^2.26.0",
 		"joi": "^18.0.0"
 	}
 }
