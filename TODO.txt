@@ -1,3 +1,5 @@
+- extract number from shopify id at processing
+
 OPTIMISATIONS
 -------------
 - pre-load portfolio images

@@ -1,14 +1,18 @@
+import { error } from '@sveltejs/kit';
 import { createStorefrontApiClient, type ClientResponse } from '@shopify/storefront-api-client';
 
 import { PUBLIC_SHOPIFY_STORE_DOMAIN, PUBLIC_SHOPIFY_STOREFRONT_TOKEN } from '$env/static/public';
+import { PUBLIC_STRAPI_API_URL } from '$env/static/public';
 
-import { getProducts as getProductsGql, type ProductQueryRes } from '^helpers/shopify';
+import {
+	extractNumberFromShopifyId,
+	getProducts as getProductsGql,
+	type ProductQueryRes
+} from '^helpers/shopify';
 import type { Shopify } from '^lib/types';
 import { purifyProduct, sanitiseProduct as sanitiseProductShopify } from '^shopify/product';
 import { sanitiseProduct as sanitiseProductDb } from '^db/product';
 import { mapToSite } from '^utils/product-shopify';
-import { PUBLIC_STRAPI_API_URL } from '$env/static/public';
-import { error } from '@sveltejs/kit';
 import { endPoint, type DbSchema } from '^db';
 
 async function fetchProductsShopify() {
@@ -84,20 +88,20 @@ export async function load({ params }) {
 		throw Error(`Failed to fetch products entities`);
 	}
 
-	const productsDbMap = new Map(productsDb.map((p) => [p.shopifyId.split('/').pop(), p]));
+	const productsDbMap = new Map(
+		productsDb.map((p) => [extractNumberFromShopifyId(p.shopifyId), p])
+	);
 
 	const productsShopifyValid = productsShopify.filter((productShopify) =>
 		productsDbMap.has(productShopify.id)
 	);
 
-	// const productsShopifyValidMap = new Map(productsShopifyValid.map((p) => [p.id, p]));
-
-	if (!productsShopify.map((p) => p.id.split('/').pop()).includes(params.slug)) {
+	if (!productsShopify.map((p) => extractNumberFromShopifyId(p.id)).includes(params.slug)) {
 		throw error(404, 'Not found');
 	}
 
 	return {
-		shopify: productsShopifyValid.find((p) => p.id.split('/').pop() === params.slug)!,
+		// shopify: productsShopifyValid.find((p) => extractNumberFromShopifyId(p.id) === params.slug)!,
 		db: productsDbMap.get(params.slug)!
 	};
 }
@@ -116,8 +120,9 @@ export async function entries() {
 		productsDbMap.has(productShopify.id)
 	);
 
+	// create product pages
 	return productsShopifyValid.map((product) => ({
-		slug: `${product.id.split('/').pop()}`
+		slug: `${extractNumberFromShopifyId(product.id)}`
 	}));
 }
 

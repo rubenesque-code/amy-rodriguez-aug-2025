@@ -5,7 +5,7 @@ import { positionsSchema, stylesDefaultSchema } from '^db/common';
 import type { DbSchema } from '^db/~types';
 import type { MyOmit } from '^lib/types';
 
-const imageComponentSchema = buildSchema<DbSchema['Product']['images'][number]>({
+const imageComponentSchema = buildSchema<DbSchema['ProductRaw']['images'][number]>({
 	id: Joi.number().required(),
 	layer: Joi.number().required(),
 	order: Joi.number().required(),
@@ -22,10 +22,20 @@ const imageComponentSchema = buildSchema<DbSchema['Product']['images'][number]>(
 const imageComponentsSchema = Joi.array()
 	.custom((value) => {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const validImageComponents = (value as any[]).filter((component) => {
-			const { error } = imageComponentSchema.validate(component, { convert: false });
-			return !error;
-		});
+		const validImageComponents = (value as any[])
+			.map((component) => {
+				const { error, value: valueCleaned } = imageComponentSchema.validate(component, {
+					convert: false,
+					stripUnknown: true
+				});
+
+				if (error) {
+					return null;
+				}
+
+				return valueCleaned;
+			})
+			.filter(Boolean);
 
 		return validImageComponents;
 	})
@@ -39,7 +49,7 @@ const textComponentSchema = buildSchema<DbSchema['TextComponent']>({
 });
 
 const productSchema = buildSchema<
-	MyOmit<DbSchema['Product'], 'collections' | 'created_at' | 'updated_at'>
+	MyOmit<DbSchema['ProductRaw'], 'collections' | 'created_at' | 'updated_at'>
 >({
 	addToCartButton: textComponentSchema.allow(null).optional(),
 	id: Joi.number().required(),

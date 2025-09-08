@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import { createOptimisedImgUrl } from '^helpers';
+	import { extractNumberFromShopifyId } from '^helpers/shopify';
 </script>
 
 <script lang="ts">
@@ -13,7 +14,7 @@
 	} = $props();
 </script>
 
-<a class="block" href={`/shop/${props.shopifyId.split('/').pop()}`}>
+<a class="block" href={`/shop/${extractNumberFromShopifyId(props.shopifyId)}`}>
 	<img
 		class="max-h-[620px] w-full"
 		src={createOptimisedImgUrl(props.imgUrl)}

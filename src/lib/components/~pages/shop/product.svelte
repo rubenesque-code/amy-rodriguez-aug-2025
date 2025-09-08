@@ -3,6 +3,7 @@
 
 	import { createOptimisedImgUrl } from '^helpers';
 	import type { SiteSchema } from '^lib/types';
+	import { extractNumberFromShopifyId } from '^helpers/shopify';
 </script>
 
 <script lang="ts">
@@ -94,7 +95,7 @@
 
 <a
 	class="absolute block"
-	href={`/shop/${props.shopifyId.split('/').pop()}`}
+	href={`/shop/${extractNumberFromShopifyId(props.shopifyId)}`}
 	bind:this={containerNode}
 >
 	<img
